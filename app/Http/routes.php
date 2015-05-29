@@ -42,3 +42,6 @@ Route::get('students/add', function(){
 
     echo "Students added successfully.";
 });
+
+
+Route::resource('user', 'UserController');
