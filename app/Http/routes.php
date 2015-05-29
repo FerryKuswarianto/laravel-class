@@ -45,3 +45,4 @@ Route::get('students/add', function(){
 
 
 Route::resource('user', 'UserController');
+Route::resource('group', 'GroupController');
