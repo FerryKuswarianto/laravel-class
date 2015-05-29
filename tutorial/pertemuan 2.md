@@ -1,5 +1,8 @@
 # CRUD dalam Laravel
 
+__Terlampir package untuk Sublime Text 3 (64bit)__
+__Copy-paste & extract di:__ `C:\Users\NamaUser\AppData\Roaming\Sublime Text 3`
+
 1. Buat model dengan perintah `php artisan make:model NamaModel`
     - otomatis membuat model
     - otomatis membuat migration
@@ -64,4 +67,3 @@
 ### relasi
 - 1 user bisa memiliki banyak group
 - 1 group bisa memiliki banyak user
-
