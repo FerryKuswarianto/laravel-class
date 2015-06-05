@@ -17,7 +17,9 @@ class UserController extends Controller {
 	 */
 	public function index()
 	{
-		//
+		$users = User::get();
+
+		return view('user.index', compact('users'));
 	}
 
 	/**
@@ -63,7 +65,8 @@ class UserController extends Controller {
 	 */
 	public function edit($id)
 	{
-		//
+		$user = User::findOrFail($id);
+		return view('user.edit', compact('user'));
 	}
 
 	/**
@@ -74,7 +77,9 @@ class UserController extends Controller {
 	 */
 	public function update($id)
 	{
-		//
+		$user = User::findOrFail($id);
+		$user->update(Input::all());
+		return redirect()->route('user.show', $id);
 	}
 
 	/**
@@ -83,9 +88,12 @@ class UserController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
+	public function delete($id)
 	{
-		//
+		$user = User::findOrFail($id);
+		$user->delete();
+		
+		return redirect()->route('user.index');
 	}
 
 }

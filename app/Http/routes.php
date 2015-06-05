@@ -11,6 +11,12 @@
 |
 */
 
+Route::get('blade', function(){
+    $var = "<input name='nama_variabel' value='2' />";
+
+    return view('blade', compact('var'));
+});
+
 Route::get('/', 'WelcomeController@index');
 
 Route::get('home', 'HomeController@index');
@@ -44,5 +50,8 @@ Route::get('students/add', function(){
 });
 
 
-Route::resource('user', 'UserController');
-Route::resource('group', 'GroupController');
+Route::resource('user', 'UserController', ['except' => ['destroy']]);
+Route::get ('/user/{user}/delete', ['uses' => 'UserController@delete', 'as' => 'user.delete']);
+
+Route::resource('group', 'GroupController', ['except' => ['destroy']]);
+Route::get ('/user/{group}/delete', ['uses' => 'GroupController@delete', 'as' => 'group.delete']);
