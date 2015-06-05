@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Group;
 
 use Illuminate\Http\Request;
+use \Input;
 
 class GroupController extends Controller {
 
@@ -38,7 +39,7 @@ class GroupController extends Controller {
 	 */
 	public function store()
 	{
-		//
+		Group::create(Input::all());
 	}
 
 	/**

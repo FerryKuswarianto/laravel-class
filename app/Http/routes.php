@@ -49,9 +49,15 @@ Route::get('students/add', function(){
     echo "Students added successfully.";
 });
 
-
 Route::resource('user', 'UserController', ['except' => ['destroy']]);
 Route::get ('/user/{user}/delete', ['uses' => 'UserController@delete', 'as' => 'user.delete']);
+Route::get ('/login', ['uses' => 'UserController@login', 'as' => 'user.login']);
+Route::post('/login', ['uses' => 'UserController@login', 'as' => 'user.login']);
 
 Route::resource('group', 'GroupController', ['except' => ['destroy']]);
 Route::get ('/user/{group}/delete', ['uses' => 'GroupController@delete', 'as' => 'group.delete']);
+
+Route::get ('/test', function(){
+    $user = App\User::find(2);
+    $user->groups()->attach(1);
+});

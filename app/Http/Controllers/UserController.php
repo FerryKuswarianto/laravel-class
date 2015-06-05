@@ -6,9 +6,20 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\User;
+use App\Group;
 use \Input;
+use \Auth;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 
 class UserController extends Controller {
+
+	use ValidatesRequests;
+
+	protected $rules = [
+		'name' => 'required|min:10',
+		'email' => 'email|required',
+		'password' => 'required|min:8'
+	];
 
 	/**
 	 * Display a listing of the resource.
@@ -30,7 +41,9 @@ class UserController extends Controller {
 	public function create()
 	{
 		$user = new User;
-		return view('user.create', compact('user'));
+		$groups = Group::get()->lists('name', 'id');
+		$userGroups = [];
+		return view('user.create', compact('user', 'groups', 'userGroups'));
 	}
 
 	/**
@@ -38,9 +51,10 @@ class UserController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
+	public function store(Request $request)
 	{
-		// dd(Input::all());
+		$this->validate($request, $this->rules);
+
 		$user = User::create(Input::all());
 		return redirect()->route('user.show', $user->id);
 	}
@@ -54,7 +68,10 @@ class UserController extends Controller {
 	public function show($id)
 	{
 		$user = User::findOrFail($id);
-		return view('user.show', compact('user'));
+		$groups = Group::get()->lists('name', 'id');
+
+		$userGroups = $user->groups->lists('id');
+		return view('user.show', compact('user', 'groups', 'userGroups'));
 	}
 
 	/**
@@ -66,7 +83,11 @@ class UserController extends Controller {
 	public function edit($id)
 	{
 		$user = User::findOrFail($id);
-		return view('user.edit', compact('user'));
+		$groups = Group::get()->lists('name', 'id');
+
+		$userGroups = $user->groups->lists('id');
+
+		return view('user.edit', compact('user', 'groups', 'userGroups'));
 	}
 
 	/**
@@ -75,10 +96,16 @@ class UserController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
+	public function update(Request $request, $id)
 	{
+		$this->validate($request, $this->rules);
+
 		$user = User::findOrFail($id);
 		$user->update(Input::all());
+
+		$groups = Input::get('groups') ?: [];
+		$user->groups()->sync($groups);
+
 		return redirect()->route('user.show', $id);
 	}
 
@@ -92,8 +119,25 @@ class UserController extends Controller {
 	{
 		$user = User::findOrFail($id);
 		$user->delete();
-		
+
 		return redirect()->route('user.index');
+	}
+
+	public function login(Request $request)
+	{
+		if ($request->isMethod('get')) {
+			return view('user.login');
+		} else {
+			$user = User::where('email', Input::get('email'))
+				->where('password', Input::get('password'))
+				->first();
+			if ($user != null) {
+				Auth::loginUsingId($user->id);
+	            return redirect()->route('user.index');
+	        } else {
+	        	return redirect()->back();
+	        }
+		}
 	}
 
 }
